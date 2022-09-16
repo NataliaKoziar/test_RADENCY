@@ -10,10 +10,11 @@
 </head>
 <body>
     <div class="container">
+        <div class="overlay"></div>
        <div class="note-list">
             <div class="table">
                 <div class="thead">
-                    <div class="row">
+                    <div class="row bold">
                       <div class="cell w-10"></div>
                       <div class="cell"> Name</div>
                       <div class="cell">Created</div>
@@ -27,23 +28,7 @@
                     </div>
                 </div>
                 <div class="tbody" id="noteList">
-                    <div class="row">
-                        <div class="cell w-10">
-                              <div class="icon">
-                                  <i class="fa fa-shopping-cart fa-2x"></i> 
-                               </div>
-                           </div>
-                        <div class="cell">Shopping list</div>
-                        <div class="cell">April 20, 2022</div>
-                        <div class="cell">Task</div>
-                        <div class="cell">Tomatoes, bread</div>
-                        <div class="cell">3/5/2021</div>
-                        <div class="cell w-10">
-                         <div class="edit"><i class="fa fa-pencil fa-2x"></i></div>
-                         <div class="archived"><i class="fa fa-archive fa-2x"></i></div>
-                         <div class="delete"><i class="fa fa-trash fa-2x"></i></div>
-                        </div>  
-                    </div>
+                   
                 </div>
             </div>
             <button id="btnCreateNote">Create Note</button>
@@ -51,7 +36,7 @@
         <div class="archived-list">
             <div class="table">
                 <div class="thead">
-                    <div class="row">
+                    <div class="row bold">
                       <div class="cell w-10"></div>
                       <div class="cell"> Note Category</div>
                       <div class="cell">Active</div>
@@ -61,21 +46,7 @@
                      </div>
                     </div>
                 <div class="tbody" id="archivedList">
-                    <div class="row">
-                        <div class="cell w-10">
-                              <div class="icon">
-                                  <i class="fa fa-shopping-cart fa-2x"></i> 
-                               </div>
-                           </div>
-                        <div class="cell">Task</div>
-                        <div class="cell">13</div>
-                        <div class="cell">4</div>
-                        <div class="cell">
-                            <button class="btnDetail">See more</button>
-                            <!-- <i class="fa fa-inbox fa-2x"></i> -->
-                        </div>
-
-                    </div>
+                    
                 </div>          
              </div>
         </div>
@@ -94,7 +65,7 @@
                  <input type="text" name="content">
             
             <label>Dates:</label>
-                <input type="date" name="date" >
+                <input type="text" name="date" class="inputDate" >
             
             <input type="button" class="btn" id="btnCreate" value="Create">
         </form>
@@ -113,7 +84,7 @@
                  <input type="text" name="content">
             
             <label>Dates:</label>
-                <input type="date" name="date" >
+                <input type="text" name="date" class="inputDate" >
             
             <input type="button" class="btn" id="btnEdit" value="Edit">
         </form>
@@ -121,7 +92,7 @@
             <h2>Details</h2>
             <div class="table">
                 <div class="thead">
-                    <div class="row">
+                    <div class="row bold">
                       <div class="cell">Name</div>
                       <div class="cell"> Created</div>
                       <div class="cell">Content</div>
@@ -132,16 +103,7 @@
                     </div>
                 </div>
                 <div class="tbody" id="archivedFiles">
-                    <!-- <div class="row">
-                        <div class="cell">Shopping list</div>
-                        <div class="cell">April 20,2022</div>
-                        <div class="cell">Tomatoes, bread</div>
-                        <div class="cell">3/5/23</div>
-                        <div class="cell">
-                          <div class="unzip"><i class="fa fa-inbox fa-2x"></i></div>
-                        </div>
-
-                    </div> -->
+                    
                 </div>          
              </div>
              <div class="close">

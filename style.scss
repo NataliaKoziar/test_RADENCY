@@ -8,7 +8,17 @@
     margin: 0 auto;
     padding: 20px;
     position: relative;
-    // background-color: aqua;
+    .overlay{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 5;
+        background-color: rgba($color: #363535, $alpha: .7);
+        display: none;
+    }
+   
     .note-list{
         display: flex;
         flex-direction: column;
@@ -21,14 +31,14 @@
         border: 2px solid #605f5f;
         border-radius: 10px;
         padding: 15px;
-        // display: flex;
-        display: none;
+               display: none;
         flex-direction: column;
         justify-content: space-between;
-        position: absolute;
+        position: fixed;
         top: 200px;
         left: calc(50% - 250px);
         background-color: white;
+        z-index: 10;
         input, select{
             padding: 5px;
             font-size: 14px;
@@ -40,6 +50,9 @@
             font-size: 16px;
             font-weight: bold; 
         }
+        .is-invalid{
+            border: 2px solid #d01010;
+        }
     }
     .details{
         display: none;
@@ -48,10 +61,11 @@
         border: 2px solid #605f5f;
         border-radius: 10px;
         padding: 10px;
-        position: absolute;
+        position: fixed;
         top: calc(50% - 350px);
         left: calc(50% - 350px);
         background-color: white;
+        z-index: 10;
         .cell{
             width: 20%!important;
         }
@@ -86,7 +100,7 @@
           padding: 10px;
             .cell {
                 width: 16%;
-                // font-weight: bold;
+               
                 color: white;
                 border: none;
                 padding: 10px 5px;
@@ -97,8 +111,12 @@
                 display: flex;
                 justify-content: end;
                 width: 10%;
-                // text-align: right;
+                
             }
+           
+        }
+        .bold{
+            font-weight: bold;
            
         }
         

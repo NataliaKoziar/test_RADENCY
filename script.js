@@ -1,4 +1,5 @@
 import {data, types} from "./data.js";
+
 const noteList = document.getElementById('noteList');
 const archivedList = document.getElementById('archivedList');
 const btnCreateNote = document.querySelector('#btnCreateNote');
@@ -17,46 +18,82 @@ const btnEdit = document.getElementById('btnEdit');
 const details = document.querySelector('.details');
 const archivedFiles = document.getElementById('archivedFiles');
 const btnClose = document.querySelector('.close');
+const overlay = document.querySelector('.overlay');
+const dateInpArr = document.querySelectorAll('.inputDate')
 let noteIndex;
+let isValidate = false;
 
-
-
-
-function edit (id, i) {
+// Function for validating fields in forms
+const isValid = function(form){
    
+    for (let i = 1; i < form.length - 2; i++) {
+       console.log(form[i].value.length);
+        
+        if (!form[i].value) {
+            form[i].classList.add('is-invalid');
+            isValidate = false;
+           continue
+        }else if(form[1].value && form[2].value){
+            form[i].classList.remove('is-invalid');
+            isValidate = true;
+        }
+    }
+   
+}
+
+const refresh = (form)=>{
+    for (let i = 1; i < form.length - 2; i++){
+        form[i].classList.remove('is-invalid');
+    }
+}
+// Allow only numbers in the input values for writing the date
+for (let i=0; i<dateInpArr.length; i++){
+    dateInpArr[i].oninput = ()=>{
+        dateInpArr[i].value =  dateInpArr[i].value.replace(/[^0-9\.\/]/g, '');
+    }
+}
+// Exit from form
+overlay.onclick = ()=>{
+    editNoteForm.style.display = 'none';
+    details.style.display = "none";
+    createNote.style.display = 'none';
+    overlay.style.display = 'none';
+
+}
+// Note editing form
+function edit (id, i) {
+    refresh(editNoteForm)
+    isValidate = false;
+    overlay.style.display = 'block';
    let arr = data.filter(el=>el.isArchived == false);
     editNoteForm.style.display = 'flex';
     editCategory.value = arr[i].category;
     editTitle.value = arr[i].name;
     editContent.value = arr[i].content;
-    editDate.value = arr[i].dates;
     noteIndex = id;
   
 }
 window.edit = edit
-
+// Archiving a note
 function archivedNote (id) {
-    noteIndex = id;
-    let serchIndex = data.findIndex(item=>item.id == noteIndex)
+    let serchIndex = data.findIndex(item=>item.id == id)
     data[serchIndex].isArchived = true;
     renderNoteList();
     renderArchiveList();
 }
 window.archivedNote = archivedNote
-
+// Deleting a note
 function deleteNote (id) {
-    noteIndex = id;
-    let serchIndex = data.findIndex(item=>item.id == noteIndex)
+    let serchIndex = data.findIndex(item=>item.id == id)
     types[data[serchIndex].category].count-=1;
     data.splice(serchIndex, 1);
     renderNoteList();
     renderArchiveList();
 }
 window.deleteNote = deleteNote
+// UnArchiving a note
 const unarchiveNote=(id, i, arr)=>{
-    noteIndex = id;
-    console.log(arr);
-    let serchIndex = data.findIndex(item=>item.id == noteIndex)
+    let serchIndex = data.findIndex(item=>item.id == id)
     data[serchIndex].isArchived = false;
     renderNoteList();
     renderArchiveList();
@@ -66,12 +103,12 @@ const unarchiveNote=(id, i, arr)=>{
 }
 window.unarchiveNote = unarchiveNote
 
-
+// A modal menu with a list of archived notes
 function showDetails(arr){
-    console.log(arr);
+    overlay.style.display = 'block';
     details.style.display = "block";
     archivedFiles.innerHTML = '';
-       arr?.map((el, i, arr)=>{
+       arr.map((el, i, arr)=>{
         archivedFiles.innerHTML +=
         ` <div class="row">
         <div class="cell">${el.name}</div>
@@ -86,29 +123,32 @@ function showDetails(arr){
 }
 window.showDetails = showDetails
 
-
+// Exit from list of archived notes
 btnClose.onclick = ()=>{
     details.style.display = "none";
-    // archivedFiles.innerHTML = '';
+    overlay.style.display = 'none';
 }
 
-btnEdit.onclick = (e, id)=>{
-    console.log(noteIndex);
+// Editing a note
+
+btnEdit.onclick = (e)=>{
     e.preventDefault();
-    console.log(e);
-    console.log(id);
-   let serchIndex = data.findIndex(item=>item.id == noteIndex);
-   console.log(noteIndex);
-     data[serchIndex].category = editCategory.value;
-     data[serchIndex].name =  editTitle.value;
-     data[serchIndex].content = editContent.value;
-     data[serchIndex].dates += `, ${editDate.value}`;
-     renderNoteList();
-     renderArchiveList();
-     editNoteForm.style.display = 'none'; 
+    isValid(editNoteForm);
+    if(isValidate ){
+          let serchIndex = data.findIndex(item=>item.id == noteIndex);
+       data[serchIndex].category = editCategory.value;
+       data[serchIndex].name =  editTitle.value;
+       data[serchIndex].content = editContent.value;
+       (editDate.value)? data[serchIndex].dates += `, ${editDate.value}`:data[serchIndex].dates += '';
+       renderNoteList();
+       renderArchiveList();
+       editNoteForm.style.display = 'none';
+       overlay.style.display = 'none'; 
+
+    }
 }
 
-
+// Rendering of active notes
 const renderNoteList = ()=>{
     noteList.innerHTML= '';
     let filterArray = data.filter(el=>el.isArchived == false);
@@ -136,7 +176,7 @@ const renderNoteList = ()=>{
 }
 renderNoteList();
 
-
+// Rendering of archive notes
 const renderArchiveList = ()=>{
     archivedList.innerHTML = '';
     let filterArray = [...data.filter(el=>el.isArchived == true)];
@@ -154,7 +194,7 @@ const renderArchiveList = ()=>{
         arr:filterArray.filter(el=>el.category == 'quote')
          },
     ]
-    // console.log(objArr);
+    
     objArr.map((el,index)=>{
         if (el.arr.length ){
             archivedList.innerHTML+=
@@ -175,28 +215,37 @@ const renderArchiveList = ()=>{
     })
 }
 renderArchiveList();
-
+// Form of creating a new note
 const showCreateForm=()=>{
+    overlay.style.display = 'block';
     createNote.style.display = 'flex';
 }
 btnCreateNote.addEventListener('click', showCreateForm )
 
+// Creating a new note
 const createNewNote = ()=>{
-    let obj = {};
-    obj.category = categoryInp.value;
-    obj.icon = types[categoryInp.value].icon;
-    obj.name = titleInp.value[0].toUpperCase()+titleInp.value.substring(1);
-    obj.created = new Date().toDateString();
-    obj.content = contentInp.value;
-    obj.dates = dateInp.value;
-    obj.isArchived = false;
-    obj.id = Date.now().toString();
-    data.push(obj);
-    // data = [...data, obj];
-    types[categoryInp.value].count+=1
-    createNote.reset();
-    renderNoteList();
-    renderArchiveList();
-    createNote.style.display = 'none'
+    // isValid(createNote);
+   
+   try {
+        let obj = {
+        category : categoryInp.value,
+        icon : types[categoryInp.value].icon,
+        name : titleInp.value[0].toUpperCase()+titleInp.value.substring(1),
+        created : new Date().toDateString(),
+        content : contentInp.value[0].toUpperCase()+contentInp.value.substring(1),
+        dates : dateInp.value,
+        isArchived : false,
+        id : Date.now().toString(),
+        }
+        data.push(obj);
+        types[categoryInp.value].count+=1
+        createNote.reset();
+        renderNoteList();
+        renderArchiveList();
+        createNote.style.display = 'none'
+        overlay.style.display = 'none';
+    } catch{
+        alert('Fill in all fields!')
+    }
 }
 btnCreate.addEventListener('click',createNewNote);

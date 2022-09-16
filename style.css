@@ -9,6 +9,16 @@
   padding: 20px;
   position: relative;
 }
+.container .overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  background-color: rgba(54, 53, 53, 0.7);
+  display: none;
+}
 .container .note-list {
   display: flex;
   flex-direction: column;
@@ -24,10 +34,11 @@
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  position: absolute;
+  position: fixed;
   top: 200px;
   left: calc(50% - 250px);
   background-color: white;
+  z-index: 10;
 }
 .container form input, .container form select {
   padding: 5px;
@@ -40,6 +51,9 @@
   font-size: 16px;
   font-weight: bold;
 }
+.container form .is-invalid {
+  border: 2px solid #d01010;
+}
 .container .details {
   display: none;
   width: 700px;
@@ -47,10 +61,11 @@
   border: 2px solid #605f5f;
   border-radius: 10px;
   padding: 10px;
-  position: absolute;
-  top: 200px;
+  position: fixed;
+  top: calc(50% - 350px);
   left: calc(50% - 350px);
   background-color: white;
+  z-index: 10;
 }
 .container .details .cell {
   width: 20% !important;
@@ -91,6 +106,9 @@
   display: flex;
   justify-content: end;
   width: 10%;
+}
+.table .thead .bold, .table .tbody .bold {
+  font-weight: bold;
 }
 .table .tbody .row {
   background-color: #dbd3d3;
