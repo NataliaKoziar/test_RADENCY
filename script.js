@@ -17,13 +17,14 @@ const btnEdit = document.getElementById('btnEdit');
 const details = document.querySelector('.details');
 const archivedFiles = document.getElementById('archivedFiles');
 const btnClose = document.querySelector('.close');
+const overlay = document.querySelector('.overlay');
 let noteIndex;
 
 
 
 
 function edit (id, i) {
-   
+    overlay.style.display = 'block';
    let arr = data.filter(el=>el.isArchived == false);
     editNoteForm.style.display = 'flex';
     editCategory.value = arr[i].category;
@@ -36,8 +37,7 @@ function edit (id, i) {
 window.edit = edit
 
 function archivedNote (id) {
-    noteIndex = id;
-    let serchIndex = data.findIndex(item=>item.id == noteIndex)
+    let serchIndex = data.findIndex(item=>item.id == id)
     data[serchIndex].isArchived = true;
     renderNoteList();
     renderArchiveList();
@@ -45,18 +45,16 @@ function archivedNote (id) {
 window.archivedNote = archivedNote
 
 function deleteNote (id) {
-    noteIndex = id;
-    let serchIndex = data.findIndex(item=>item.id == noteIndex)
+    let serchIndex = data.findIndex(item=>item.id == id)
     types[data[serchIndex].category].count-=1;
     data.splice(serchIndex, 1);
     renderNoteList();
     renderArchiveList();
 }
 window.deleteNote = deleteNote
+
 const unarchiveNote=(id, i, arr)=>{
-    noteIndex = id;
-    console.log(arr);
-    let serchIndex = data.findIndex(item=>item.id == noteIndex)
+    let serchIndex = data.findIndex(item=>item.id == id)
     data[serchIndex].isArchived = false;
     renderNoteList();
     renderArchiveList();
@@ -68,10 +66,10 @@ window.unarchiveNote = unarchiveNote
 
 
 function showDetails(arr){
-    console.log(arr);
+    overlay.style.display = 'block';
     details.style.display = "block";
     archivedFiles.innerHTML = '';
-       arr?.map((el, i, arr)=>{
+       arr.map((el, i, arr)=>{
         archivedFiles.innerHTML +=
         ` <div class="row">
         <div class="cell">${el.name}</div>
@@ -89,23 +87,20 @@ window.showDetails = showDetails
 
 btnClose.onclick = ()=>{
     details.style.display = "none";
-    // archivedFiles.innerHTML = '';
+    overlay.style.display = 'none';
 }
 
-btnEdit.onclick = (e, id)=>{
-    console.log(noteIndex);
+btnEdit.onclick = (e)=>{
     e.preventDefault();
-    console.log(e);
-    console.log(id);
-   let serchIndex = data.findIndex(item=>item.id == noteIndex);
-   console.log(noteIndex);
+      let serchIndex = data.findIndex(item=>item.id == noteIndex);
      data[serchIndex].category = editCategory.value;
      data[serchIndex].name =  editTitle.value;
      data[serchIndex].content = editContent.value;
-     data[serchIndex].dates += `, ${editDate.value}`;
+    (editDate.value)? data[serchIndex].dates += `, ${editDate.value}`:data[serchIndex].dates += '';
      renderNoteList();
      renderArchiveList();
-     editNoteForm.style.display = 'none'; 
+     editNoteForm.style.display = 'none';
+     overlay.style.display = 'none'; 
 }
 
 
@@ -154,7 +149,7 @@ const renderArchiveList = ()=>{
         arr:filterArray.filter(el=>el.category == 'quote')
          },
     ]
-    // console.log(objArr);
+    
     objArr.map((el,index)=>{
         if (el.arr.length ){
             archivedList.innerHTML+=
@@ -177,26 +172,28 @@ const renderArchiveList = ()=>{
 renderArchiveList();
 
 const showCreateForm=()=>{
+    overlay.style.display = 'block';
     createNote.style.display = 'flex';
 }
 btnCreateNote.addEventListener('click', showCreateForm )
 
 const createNewNote = ()=>{
-    let obj = {};
-    obj.category = categoryInp.value;
-    obj.icon = types[categoryInp.value].icon;
-    obj.name = titleInp.value[0].toUpperCase()+titleInp.value.substring(1);
-    obj.created = new Date().toDateString();
-    obj.content = contentInp.value;
-    obj.dates = dateInp.value;
-    obj.isArchived = false;
-    obj.id = Date.now().toString();
+    let obj = {
+    category : categoryInp.value,
+    icon : types[categoryInp.value].icon,
+    name : titleInp.value[0].toUpperCase()+titleInp.value.substring(1),
+    created : new Date().toDateString(),
+    content : contentInp.value,
+    dates : dateInp.value,
+    isArchived : false,
+    id : Date.now().toString(),
+    }
     data.push(obj);
-    // data = [...data, obj];
     types[categoryInp.value].count+=1
     createNote.reset();
     renderNoteList();
     renderArchiveList();
     createNote.style.display = 'none'
+    overlay.style.display = 'none';
 }
 btnCreate.addEventListener('click',createNewNote);
