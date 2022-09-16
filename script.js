@@ -22,31 +22,37 @@ const overlay = document.querySelector('.overlay');
 const dateInpArr = document.querySelectorAll('.inputDate')
 let noteIndex;
 let isValidate = false;
-console.log(dateInpArr);
-const isValid = function(form){
-    console.log(form);
-    // let regExpArr = [/^([\w-_.,'\s]){4,20}$/,/^([\w-_.,'\s])+$/ ];
 
+// Function for validating fields in forms
+const isValid = function(form){
+   
     for (let i = 1; i < form.length - 2; i++) {
-       console.log(form[i]);
-        // if (!regExpArr[i-1].test(form[i].value) && form.length) {
+       console.log(form[i].value.length);
+        
         if (!form[i].value) {
             form[i].classList.add('is-invalid');
             isValidate = false;
            continue
-        }else {
+        }else if(form[1].value && form[2].value){
             form[i].classList.remove('is-invalid');
             isValidate = true;
         }
     }
    
 }
+
+const refresh = (form)=>{
+    for (let i = 1; i < form.length - 2; i++){
+        form[i].classList.remove('is-invalid');
+    }
+}
+// Allow only numbers in the input values for writing the date
 for (let i=0; i<dateInpArr.length; i++){
     dateInpArr[i].oninput = ()=>{
         dateInpArr[i].value =  dateInpArr[i].value.replace(/[^0-9\.\/]/g, '');
     }
 }
-
+// Exit from form
 overlay.onclick = ()=>{
     editNoteForm.style.display = 'none';
     details.style.display = "none";
@@ -54,9 +60,10 @@ overlay.onclick = ()=>{
     overlay.style.display = 'none';
 
 }
-
+// Note editing form
 function edit (id, i) {
-    isValidate = true;
+    refresh(editNoteForm)
+    isValidate = false;
     overlay.style.display = 'block';
    let arr = data.filter(el=>el.isArchived == false);
     editNoteForm.style.display = 'flex';
@@ -67,7 +74,7 @@ function edit (id, i) {
   
 }
 window.edit = edit
-
+// Archiving a note
 function archivedNote (id) {
     let serchIndex = data.findIndex(item=>item.id == id)
     data[serchIndex].isArchived = true;
@@ -75,7 +82,7 @@ function archivedNote (id) {
     renderArchiveList();
 }
 window.archivedNote = archivedNote
-
+// Deleting a note
 function deleteNote (id) {
     let serchIndex = data.findIndex(item=>item.id == id)
     types[data[serchIndex].category].count-=1;
@@ -84,7 +91,7 @@ function deleteNote (id) {
     renderArchiveList();
 }
 window.deleteNote = deleteNote
-
+// UnArchiving a note
 const unarchiveNote=(id, i, arr)=>{
     let serchIndex = data.findIndex(item=>item.id == id)
     data[serchIndex].isArchived = false;
@@ -96,7 +103,7 @@ const unarchiveNote=(id, i, arr)=>{
 }
 window.unarchiveNote = unarchiveNote
 
-
+// A modal menu with a list of archived notes
 function showDetails(arr){
     overlay.style.display = 'block';
     details.style.display = "block";
@@ -116,12 +123,13 @@ function showDetails(arr){
 }
 window.showDetails = showDetails
 
-
+// Exit from list of archived notes
 btnClose.onclick = ()=>{
     details.style.display = "none";
     overlay.style.display = 'none';
 }
 
+// Editing a note
 
 btnEdit.onclick = (e)=>{
     e.preventDefault();
@@ -140,7 +148,7 @@ btnEdit.onclick = (e)=>{
     }
 }
 
-
+// Rendering of active notes
 const renderNoteList = ()=>{
     noteList.innerHTML= '';
     let filterArray = data.filter(el=>el.isArchived == false);
@@ -168,7 +176,7 @@ const renderNoteList = ()=>{
 }
 renderNoteList();
 
-
+// Rendering of archive notes
 const renderArchiveList = ()=>{
     archivedList.innerHTML = '';
     let filterArray = [...data.filter(el=>el.isArchived == true)];
@@ -207,15 +215,16 @@ const renderArchiveList = ()=>{
     })
 }
 renderArchiveList();
-
+// Form of creating a new note
 const showCreateForm=()=>{
     overlay.style.display = 'block';
     createNote.style.display = 'flex';
 }
 btnCreateNote.addEventListener('click', showCreateForm )
 
+// Creating a new note
 const createNewNote = ()=>{
-    isValid(createNote);
+    // isValid(createNote);
    
    try {
         let obj = {
