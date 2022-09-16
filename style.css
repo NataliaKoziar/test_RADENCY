@@ -51,6 +51,9 @@
   font-size: 16px;
   font-weight: bold;
 }
+.container form .is-invalid {
+  border: 2px solid #d01010;
+}
 .container .details {
   display: none;
   width: 700px;

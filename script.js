@@ -1,4 +1,5 @@
 import {data, types} from "./data.js";
+
 const noteList = document.getElementById('noteList');
 const archivedList = document.getElementById('archivedList');
 const btnCreateNote = document.querySelector('#btnCreateNote');
@@ -18,19 +19,50 @@ const details = document.querySelector('.details');
 const archivedFiles = document.getElementById('archivedFiles');
 const btnClose = document.querySelector('.close');
 const overlay = document.querySelector('.overlay');
+const dateInpArr = document.querySelectorAll('.inputDate')
 let noteIndex;
+let isValidate = false;
+console.log(dateInpArr);
+const isValid = function(form){
+    console.log(form);
+    // let regExpArr = [/^([\w-_.,'\s]){4,20}$/,/^([\w-_.,'\s])+$/ ];
 
+    for (let i = 1; i < form.length - 2; i++) {
+       console.log(form[i]);
+        // if (!regExpArr[i-1].test(form[i].value) && form.length) {
+        if (!form[i].value) {
+            form[i].classList.add('is-invalid');
+            isValidate = false;
+           continue
+        }else {
+            form[i].classList.remove('is-invalid');
+            isValidate = true;
+        }
+    }
+   
+}
+for (let i=0; i<dateInpArr.length; i++){
+    dateInpArr[i].oninput = ()=>{
+        dateInpArr[i].value =  dateInpArr[i].value.replace(/[^0-9\.\/]/g, '');
+    }
+}
 
+overlay.onclick = ()=>{
+    editNoteForm.style.display = 'none';
+    details.style.display = "none";
+    createNote.style.display = 'none';
+    overlay.style.display = 'none';
 
+}
 
 function edit (id, i) {
+    isValidate = true;
     overlay.style.display = 'block';
    let arr = data.filter(el=>el.isArchived == false);
     editNoteForm.style.display = 'flex';
     editCategory.value = arr[i].category;
     editTitle.value = arr[i].name;
     editContent.value = arr[i].content;
-    editDate.value = arr[i].dates;
     noteIndex = id;
   
 }
@@ -90,17 +122,22 @@ btnClose.onclick = ()=>{
     overlay.style.display = 'none';
 }
 
+
 btnEdit.onclick = (e)=>{
     e.preventDefault();
-      let serchIndex = data.findIndex(item=>item.id == noteIndex);
-     data[serchIndex].category = editCategory.value;
-     data[serchIndex].name =  editTitle.value;
-     data[serchIndex].content = editContent.value;
-    (editDate.value)? data[serchIndex].dates += `, ${editDate.value}`:data[serchIndex].dates += '';
-     renderNoteList();
-     renderArchiveList();
-     editNoteForm.style.display = 'none';
-     overlay.style.display = 'none'; 
+    isValid(editNoteForm);
+    if(isValidate ){
+          let serchIndex = data.findIndex(item=>item.id == noteIndex);
+       data[serchIndex].category = editCategory.value;
+       data[serchIndex].name =  editTitle.value;
+       data[serchIndex].content = editContent.value;
+       (editDate.value)? data[serchIndex].dates += `, ${editDate.value}`:data[serchIndex].dates += '';
+       renderNoteList();
+       renderArchiveList();
+       editNoteForm.style.display = 'none';
+       overlay.style.display = 'none'; 
+
+    }
 }
 
 
@@ -178,22 +215,28 @@ const showCreateForm=()=>{
 btnCreateNote.addEventListener('click', showCreateForm )
 
 const createNewNote = ()=>{
-    let obj = {
-    category : categoryInp.value,
-    icon : types[categoryInp.value].icon,
-    name : titleInp.value[0].toUpperCase()+titleInp.value.substring(1),
-    created : new Date().toDateString(),
-    content : contentInp.value,
-    dates : dateInp.value,
-    isArchived : false,
-    id : Date.now().toString(),
+    isValid(createNote);
+   
+   try {
+        let obj = {
+        category : categoryInp.value,
+        icon : types[categoryInp.value].icon,
+        name : titleInp.value[0].toUpperCase()+titleInp.value.substring(1),
+        created : new Date().toDateString(),
+        content : contentInp.value[0].toUpperCase()+contentInp.value.substring(1),
+        dates : dateInp.value,
+        isArchived : false,
+        id : Date.now().toString(),
+        }
+        data.push(obj);
+        types[categoryInp.value].count+=1
+        createNote.reset();
+        renderNoteList();
+        renderArchiveList();
+        createNote.style.display = 'none'
+        overlay.style.display = 'none';
+    } catch{
+        alert('Fill in all fields!')
     }
-    data.push(obj);
-    types[categoryInp.value].count+=1
-    createNote.reset();
-    renderNoteList();
-    renderArchiveList();
-    createNote.style.display = 'none'
-    overlay.style.display = 'none';
 }
 btnCreate.addEventListener('click',createNewNote);

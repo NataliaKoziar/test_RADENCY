@@ -51,6 +51,9 @@
             font-size: 16px;
             font-weight: bold; 
         }
+        .is-invalid{
+            border: 2px solid #d01010;
+        }
     }
     .details{
         display: none;
