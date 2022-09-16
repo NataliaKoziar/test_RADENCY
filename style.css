@@ -107,6 +107,9 @@
   justify-content: end;
   width: 10%;
 }
+.table .thead .bold, .table .tbody .bold {
+  font-weight: bold;
+}
 .table .tbody .row {
   background-color: #dbd3d3;
 }

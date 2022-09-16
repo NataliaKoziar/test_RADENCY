@@ -18,7 +18,7 @@
         background-color: rgba($color: #363535, $alpha: .7);
         display: none;
     }
-    // background-color: aqua;
+   
     .note-list{
         display: flex;
         flex-direction: column;
@@ -31,8 +31,7 @@
         border: 2px solid #605f5f;
         border-radius: 10px;
         padding: 15px;
-        // display: flex;
-        display: none;
+               display: none;
         flex-direction: column;
         justify-content: space-between;
         position: fixed;
@@ -101,7 +100,7 @@
           padding: 10px;
             .cell {
                 width: 16%;
-                // font-weight: bold;
+               
                 color: white;
                 border: none;
                 padding: 10px 5px;
@@ -112,8 +111,12 @@
                 display: flex;
                 justify-content: end;
                 width: 10%;
-                // text-align: right;
+                
             }
+           
+        }
+        .bold{
+            font-weight: bold;
            
         }
         
