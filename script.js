@@ -27,8 +27,7 @@ let isValidate = false;
 const isValid = function(form){
    
     for (let i = 1; i < form.length - 2; i++) {
-       console.log(form[i].value.length);
-        
+             
         if (!form[i].value) {
             form[i].classList.add('is-invalid');
             isValidate = false;
@@ -219,12 +218,13 @@ renderArchiveList();
 const showCreateForm=()=>{
     overlay.style.display = 'block';
     createNote.style.display = 'flex';
+    refresh(createNote)
 }
 btnCreateNote.addEventListener('click', showCreateForm )
 
 // Creating a new note
 const createNewNote = ()=>{
-    // isValid(createNote);
+    isValid(createNote);
    
    try {
         let obj = {
